@@ -23,3 +23,11 @@
   [prob subset-cases total-cases]
   (* (bin-coefficient total-cases subset-cases)
      (prob-of-cases prob subset-cases total-cases)))
+
+(defn binom-wrapper
+  [prob total-cases small-subset large-subset]
+  (let [ret (atom 0)]
+    (doseq [i (range small-subset (inc large-subset))]
+      (let [res (binomial-distribution prob i total-cases)]
+        (swap! ret #(+ % res))))
+    @ret))
