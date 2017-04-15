@@ -13,6 +13,8 @@
        (bin-coefficient (- n 1) (- k 1)))))
 
 (defn prob-of-cases
+  "helper function for binomial distribution
+  -- needs better name"
   [probability subset-of-cases total-cases]
   (* (Math/pow probability
                subset-of-cases)
@@ -31,3 +33,39 @@
       (let [res (binomial-distribution prob i total-cases)]
         (swap! ret #(+ % res))))
     @ret))
+
+(defn z-score
+  [{:keys [avg standard-deviation x-value]}]
+  (/ (- x-value avg)
+     standard-deviation))
+
+(defn z-score-to-x-value
+  [{:keys [z-score standard-deviation avg]}]
+  (+ (* z-score standard-deviation)
+     avg))
+
+(defn standard-deviation
+  [{:keys [z-score avg x-value]}]
+  (/ (- x-value avg)
+     z-score))
+
+(defn iterate-list
+  [list]
+  (let [foo (map #(str %) list)]
+    (doseq [b foo]
+      (println b))))
+(defn gen-chain-rule
+  [list]
+  (if (= 1 (count list))
+    list
+    (let [c (first list)
+          li (cons '| (rest list))]
+      (let [foo (cons c li)]
+        (cons foo (gen-chain-rule (rest list)))))))
+
+(defmacro defprob
+  [var prob value]
+  `(def ~var {:prob ~prob :value ~value}))
+
+(def car {:value 0.3 :prob 'b})
+
